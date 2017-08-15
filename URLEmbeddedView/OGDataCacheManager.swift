@@ -24,7 +24,7 @@ final class OGDataCacheManager: NSObject {
     
     lazy var managedObjectModel: NSManagedObjectModel = {
         let modelURL = Bundle(for: type(of: self)).url(forResource: "URLEmbeddedViewOGData", withExtension: "momd")!
-        return NSManagedObjectModel(contentsOf: modelURL)!
+        return NSManagedObjectModel(contentsOf: modelURL)
     }()
     
     lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
