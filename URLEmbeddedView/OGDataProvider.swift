@@ -108,24 +108,35 @@ public final class OGDataProvider: NSObject {
                 completion?(ogData, error)
                 return
             }
-            guard let data = data,
-                  let html = Kanna.HTML(html: data, encoding: String.Encoding.utf8),
-                  let header = html.head else {
-                completion?(ogData, nil)
-                return
-            }
-            let metaTags = header.xpath(Const.metaTagKey)
-            for metaTag in metaTags {
-                guard let property = metaTag[Const.propertyKey],
-                      let content = metaTag[Const.contentKey]
-                      , property.hasPrefix(Const.propertyPrefix) else {
-                    continue
+
+            do {
+                guard let data = data else {
+                        completion?(ogData, nil)
+                        return
                 }
-                ogData.setValue(property: property, content: content)
+
+                let optionalHTML = try Kanna.HTML(html: data, encoding: String.Encoding.utf8)
+
+                guard let header = optionalHTML.head else {
+                    completion?(ogData, nil)
+                    return
+                }
+
+                let metaTags = header.xpath(Const.metaTagKey)
+                for metaTag in metaTags {
+                    guard let property = metaTag[Const.propertyKey],
+                        let content = metaTag[Const.contentKey]
+                        , property.hasPrefix(Const.propertyPrefix) else {
+                            continue
+                    }
+                    ogData.setValue(property: property, content: content)
+                }
+                ogData.save()
+
+                completion?(ogData, nil)
+            } catch {
+
             }
-            ogData.save()
-            
-            completion?(ogData, nil)
         }) 
         taskContainers[uuidString] = TaskContainer(uuidString: uuidString, task: task, completion: completion)
         task.resume()

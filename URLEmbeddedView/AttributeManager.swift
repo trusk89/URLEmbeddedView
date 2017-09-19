@@ -64,10 +64,11 @@ public final class AttributeManager {
     }
     
     func attributedText(_ string: String) -> NSAttributedString {
-        let attributes: [String : AnyObject] = [
-            NSFontAttributeName : font,
-            NSForegroundColorAttributeName : fontColor
+        let attributes: [NSAttributedStringKey : AnyObject] = [
+            NSAttributedStringKey.font : font,
+            NSAttributedStringKey.foregroundColor : fontColor
         ]
+
         return NSAttributedString(string: string, attributes: attributes)
     }
 }
